@@ -37,9 +37,11 @@ def reply_tg(chat, message_id, message, parse_mode):
 @app.route("/<groupid>", methods=['GET', 'POST'])
 def git_api(groupid):
 	data = request.json
+	if not data:
+		return "Guide: contact our API bot, then type /help in group, copy URL and paste to your git webhook."
 	# If webhook was set
 	if data.get('hook'):
-		response = post_tg(groupid, "Successfully set webhook for <b>{}</b> by <a href='{}'>{}</a>!".format(data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
+		response = post_tg(groupid, "✅ Successfully set webhook for <a href='{}'>{}</a> by <a href='{}'>{}</a>!".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
 	# If push
 	if data.get('commits'):
@@ -49,7 +51,7 @@ def git_api(groupid):
 			if len(data['commits']) >= 2:
 				commits_text += "\n———————————————————————\n"
 			if len(commits_text) > 1000:
-				text = """<b>{}</b> - New {} commits ({})
+				text = """🔨 <b>{}</b> - New {} commits ({})
 
 {}
 """.format(escape(data['repository']['name']), len(data['commits']), escape(data['ref'].split("/")[-1]), commits_text)
@@ -92,7 +94,7 @@ def git_api(groupid):
 """.format(escape(data['repository']['name']), data['pull_request']['state'], escape(data['comment']['body']), data['comment']['html_url'], data['issue']['number'])
 			response = post_tg(groupid, text, "html")
 			return response
-		text = """📊 New {} pull request for <b>{}</b>
+		text = """👨‍🔧 New {} pull request for <b>{}</b>
 
 <b>{}</b> ({})
 <code>{}</code>
@@ -100,6 +102,10 @@ def git_api(groupid):
 <a href='{}'>Pull request #{}</a>
 """.format(data['action'], escape(data['repository']['name']), escape(data['pull_request']['title']), data['pull_request']['state'], escape(data['pull_request']['body']), data['pull_request']['html_url'], data['pull_request']['number'])
 		response = post_tg(groupid, text, "html")
+		return response
+	# If there is an action
+	if data.get('action'):
+		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
 		return response
 	url = deldog(data)
 	response = post_tg(groupid, "⚠️ Undetected response: {}".format(url), "markdown")
