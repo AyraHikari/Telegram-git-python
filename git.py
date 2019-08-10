@@ -37,6 +37,10 @@ def reply_tg(chat, message_id, message, parse_mode):
 @app.route("/<groupid>", methods=['GET', 'POST'])
 def git_api(groupid):
 	data = request.json
+	# If webhook was set
+	if data.get('hook'):
+		response = post_tg(groupid, "Successfully set webhook for <b>{}</b> by <a href='{}'>{}</a>!".format(data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
+		return response
 	# If push
 	if data.get('commits'):
 		commits_text = ""
