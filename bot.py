@@ -13,7 +13,7 @@ IPADDR = requests.get("http://ipinfo.io/ip").text.replace("\n", "").replace(" ",
 print("> Your IP Address: {}".format(IPADDR))
 
 def Start(bot, update):
-    update.effective_message.reply_text("Hello!\nTo get help usage, type /help")
+    update.effective_message.reply_text("Hello!\nTo get help usage, type /help\n\nBot created by @AyraHikari.\n[Source code](https://github.com/AyraHikari/Telegram-git-python)", parse_mode="markdown")
 
 def Help(bot, update):
     text = """
