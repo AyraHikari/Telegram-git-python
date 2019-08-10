@@ -45,7 +45,7 @@ def git_api(groupid):
 	if data.get('commits'):
 		commits_text = ""
 		for x in data['commits']:
-			commits_text += f"<a href='{x['url']}'>{x['id'][:7]}</a> - {x['author']['name']} {escape('<')}{x['author']['email']}{escape('>')}\n<code>{escape(x['message'])}</code>"
+			commits_text += f"<code>{escape(x['message'])}</code>\n<a href='{x['url']}'>{x['id'][:7]}</a> - {x['author']['name']} {escape('<')}{x['author']['email']}{escape('>')}"
 			if len(data['commits']) >= 2:
 				commits_text += "\n———————————————————————\n"
 			if len(commits_text) > 1000:
