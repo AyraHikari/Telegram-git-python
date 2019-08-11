@@ -57,6 +57,8 @@ def git_api(groupid):
 """.format(escape(data['repository']['name']), len(data['commits']), escape(data['ref'].split("/")[-1]), commits_text)
 				response = post_tg(groupid, text, "html")
 				commits_text = ""
+		if not commits_text:
+			return jsonify({"ok": True, "text": "Commits text is none"})
 		text = """🔨 <b>{}</b> - New {} commits ({})
 
 {}
