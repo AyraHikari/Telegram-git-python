@@ -49,7 +49,7 @@ def git_api(groupid):
 		for x in data['commits']:
 			commits_text += f"<code>{escape(x['message'])}</code>\n<a href='{x['url']}'>{x['id'][:7]}</a> - {x['author']['name']} {escape('<')}{x['author']['email']}{escape('>')}"
 			if len(data['commits']) >= 2:
-				commits_text += "\n———————————————————————\n"
+				commits_text += "\n—————————————————————\n"
 			if len(commits_text) > 1000:
 				text = """🔨 <b>{}</b> - New {} commits ({})
 
@@ -144,7 +144,7 @@ def git_api(groupid):
 				summary = f"<code>{x['summary']}</code>\n"
 			text += f"📖 <b>{escape(x['title'])}</b> ({x['action']})\n{summary}<a href='{x['html_url']}'>{x['page_name']}</a> - <code>{x['sha'][:7]}</code>"
 			if len(data['pages']) >= 2:
-				text += "\n———————————————————————\n"
+				text += "\n—————————————————————\n"
 			response = post_tg(groupid, text, "html")
 		return response
 	url = deldog(data)
