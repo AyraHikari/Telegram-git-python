@@ -55,7 +55,7 @@ def git_api(groupid):
 
 {}
 """.format(escape(data['repository']['name']), len(data['commits']), escape(data['ref'].split("/")[-1]), commits_text)
-				response = post_tg(groupid, text, "markdown")
+				response = post_tg(groupid, text, "html")
 				commits_text = ""
 		text = """🔨 <b>{}</b> - New {} commits ({})
 
