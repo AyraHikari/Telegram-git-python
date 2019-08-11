@@ -105,7 +105,35 @@ def git_api(groupid):
 		return response
 	# If there is an action
 	if data.get('action'):
+		# If release tag
+		if data.get('action') == "published" and data.get('release'):
+			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
+			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
+			response = post_tg(groupid, text, "html")
+			return response
+		# If release tag was edited
+		if data.get('action') == "edited" and data.get('release'):
+			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
+			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
+			response = post_tg(groupid, text, "html")
+			return response
 		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
+		return response
+	# If there was ref_type
+	if data.get('ref_type'):
+		response = post_tg(groupid, "👨‍💻 A new {} on <a href='{}'>{}</a> was created by <a href='{}'>{}</a>!".format(data['ref_type'], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
+		return response
+	# If branch was created
+	if data.get('created'):
+		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was created by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
+		return response
+	# If branch was created
+	if data.get('deleted'):
+		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was deleted by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
+		return response
+	# If branch was created
+	if data.get('forced'):
+		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was forced by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
 	url = deldog(data)
 	response = post_tg(groupid, "⚠️ Undetected response: {}".format(url), "markdown")
