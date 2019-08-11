@@ -135,6 +135,18 @@ def git_api(groupid):
 	if data.get('forced'):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was forced by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
+	# If wiki pages was changed
+	if data.get('pages'):
+		text = "👨‍💻 <a href='{}'>{}</a> wiki pages was updated by <a href='{}'>{}</a>!\n\n".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login'])
+		for x in data['pages']:
+			summary = ""
+			if x['summary']:
+				summary = f"<code>{x['summary']}</code>\n"
+			text += f"📖 <b>{escape(x['title'])}</b> ({x['action']})\n{summary}<a href='{x['html_url']}'>{x['page_name']}</a> - <code>{x['sha'][:7]}</code>"
+			if len(data['pages']) >= 2:
+				text += "\n———————————————————————\n"
+			response = post_tg(groupid, text, "html")
+		return response
 	url = deldog(data)
 	response = post_tg(groupid, "⚠️ Undetected response: {}".format(url), "markdown")
 	return response
