@@ -1,5 +1,7 @@
 # Telegram-git-python
 
+> Currently only github support!
+
 ## How to use
 
 - Install all requirements, `pip install -r requirements.txt`
