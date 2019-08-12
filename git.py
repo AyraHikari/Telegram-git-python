@@ -125,7 +125,7 @@ def git_api(groupid):
 			return response
 		# If repo was started
 		if data.get('action') == "started":
-			text = "🌟 <a href='{}'>{}</a> was given a star to <a href='{}'>{}</a>!\nTotal star is now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
+			text = "🌟 <a href='{}'>{}</a> was give a star to <a href='{}'>{}</a>!\nTotal star is now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
 			response = post_tg(groupid, text, "html")
 			return response
 		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
