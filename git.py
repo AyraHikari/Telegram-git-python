@@ -43,6 +43,7 @@ def git_api(groupid):
 	if data.get('hook'):
 		response = post_tg(groupid, "✅ Successfully set webhook for <a href='{}'>{}</a> by <a href='{}'>{}</a>!".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
+
 	# If push
 	if data.get('commits'):
 		commits_text = ""
@@ -65,6 +66,7 @@ def git_api(groupid):
 """.format(escape(data['repository']['name']), len(data['commits']), escape(data['ref'].split("/")[-1]), commits_text)
 		response = post_tg(groupid, text, "html")
 		return response
+
 	# if issue
 	if data.get('issue'):
 		if data.get('comment'):
@@ -85,6 +87,7 @@ def git_api(groupid):
 """.format(data['action'], escape(data['repository']['name']), escape(data['issue']['title']), escape(data['issue']['body']), data['issue']['html_url'], data['issue']['number'])
 		response = post_tg(groupid, text, "html")
 		return response
+
 	# If pull request
 	if data.get('pull_request'):
 		if data.get('comment'):
@@ -105,24 +108,29 @@ def git_api(groupid):
 """.format(data['action'], escape(data['repository']['name']), escape(data['pull_request']['title']), data['pull_request']['state'], escape(data['pull_request']['body']), data['pull_request']['html_url'], data['pull_request']['number'])
 		response = post_tg(groupid, text, "html")
 		return response
+
 	# If fork trigger
 	if data.get('forkee'):
 		response = post_tg(groupid, "🧾 <a href='{}'>{}</a> was fork <a href='{}'>{}</a>!\nTotal fork now is {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['forks_count']), "html")
 		return response
+
 	# If there is an action
 	if data.get('action'):
+
 		# If release tag
 		if data.get('action') == "published" and data.get('release'):
 			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
 			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
 			response = post_tg(groupid, text, "html")
 			return response
+
 		# If release tag was edited
 		if data.get('action') == "edited" and data.get('release'):
 			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
 			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
 			response = post_tg(groupid, text, "html")
 			return response
+
 		# If repo was started
 		if data.get('action') == "started":
 			text = "🌟 <a href='{}'>{}</a> was give a star to <a href='{}'>{}</a>!\nTotal star is now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
@@ -130,22 +138,27 @@ def git_api(groupid):
 			return response
 		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
 		return response
+
 	# If there was ref_type
 	if data.get('ref_type'):
 		response = post_tg(groupid, "👨‍💻 A new {} on <a href='{}'>{}</a> was created by <a href='{}'>{}</a>!".format(data['ref_type'], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
+
 	# If branch was created
 	if data.get('created'):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was created by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
+
 	# If branch was created
 	if data.get('deleted'):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was deleted by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
+
 	# If branch was created
 	if data.get('forced'):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was forced by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
+
 	# If wiki pages was changed
 	if data.get('pages'):
 		text = "👨‍💻 <a href='{}'>{}</a> wiki pages was updated by <a href='{}'>{}</a>!\n\n".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login'])
@@ -158,6 +171,7 @@ def git_api(groupid):
 				text += "\n—————————————————————\n"
 			response = post_tg(groupid, text, "html")
 		return response
+
 	# If repo trigger proccess building on ci
 	if data.get('context'):
 		if data.get('state') == "pending":
@@ -168,6 +182,8 @@ def git_api(groupid):
 			emo = "💡"
 		response = post_tg(groupid, f"{emo} <a href='{data['target_url']}'>{data['description']}</a> on <a href='{data['repository']['html_url']}'>{data['repository']['name']}</a> by <a href='{data['sender']['html_url']}'>{data['sender']['login']}</a>!\nLatest commit: <a href='{data['commit']['commit']['url']}'>{data['commit']['commit']['message']}</a>", "html")
 		return response
+
+	# When there is no trigger known, send this
 	url = deldog(data)
 	response = post_tg(groupid, "⚠️ Undetected response: {}".format(url), "markdown")
 	return response
