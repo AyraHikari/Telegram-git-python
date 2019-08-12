@@ -158,6 +158,16 @@ def git_api(groupid):
 				text += "\n—————————————————————\n"
 			response = post_tg(groupid, text, "html")
 		return response
+	# If repo trigger proccess building on ci
+	if data.get('context'):
+		if data.get('state') == "pending":
+			emo = "⏳"
+		elif data.get('state') == "success":
+			emo = "✅"
+		else:
+			emo = "💡"
+		response = post_tg(groupid, f"{emo} <a href='{data['target_url']}'>{data['description']}</a> on <a href='{data['repository']['html_url']}'>{data['repository']['name']}</a> by <a href='{data['sender']['html_url']}'>{data['sender']['login']}</a>!\nLatest commit: <a href='{data['commit']['commit']['url']}'>{data['commit']['commit']['message']}</a>", "html")
+		return response
 	url = deldog(data)
 	response = post_tg(groupid, "⚠️ Undetected response: {}".format(url), "markdown")
 	return response
