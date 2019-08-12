@@ -105,6 +105,10 @@ def git_api(groupid):
 """.format(data['action'], escape(data['repository']['name']), escape(data['pull_request']['title']), data['pull_request']['state'], escape(data['pull_request']['body']), data['pull_request']['html_url'], data['pull_request']['number'])
 		response = post_tg(groupid, text, "html")
 		return response
+	# If fork trigger
+	if data.get('forkee'):
+		response = post_tg(groupid, "🧾 <a href='{}'>{}</a> was fork <a href='{}'>{}</a>!\nTotal fork now is {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['forks_count']), "html")
+		return response
 	# If there is an action
 	if data.get('action'):
 		# If release tag
@@ -117,6 +121,11 @@ def git_api(groupid):
 		if data.get('action') == "edited" and data.get('release'):
 			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
 			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
+			response = post_tg(groupid, text, "html")
+			return response
+		# If repo was started
+		if data.get('action') == "started":
+			text = "🌟 <a href='{}'>{}</a> was given a star to <a href='{}'>{}</a>!\nTotal star is now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
 			response = post_tg(groupid, text, "html")
 			return response
 		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
