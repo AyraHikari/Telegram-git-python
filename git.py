@@ -47,17 +47,19 @@ def git_api(groupid):
 	# If push
 	if data.get('commits'):
 		commits_text = ""
-		for x in data['commits']:
-			commits_text += f"<code>{escape(x['message'])}</code>\n<a href='{x['url']}'>{x['id'][:7]}</a> - {x['author']['name']} {escape('<')}{x['author']['email']}{escape('>')}"
-			if len(data['commits']) >= 2:
-				commits_text += "\n—————————————————————\n"
-			if len(commits_text) > 1000:
-				text = """🔨 <b>{}</b> - New {} commits ({})
+		rng = len(data['commits'])
+		if rng > 10:
+			rng = 10
+		for x in range(10):
+			commit = data['commits'][x]
+			commits_text += f"<code>{escape(commit['message'])}</code>\n<a href='{commit['url']}'>{commit['id'][:7]}</a> - {commit['author']['name']} {escape('<')}{commit['author']['email']}{escape('>')}"
+			if len(commits_text) > 100:
+				commits_text = commits_text.split("\n")[0]
+			text = """🔨 <b>{}</b> - New {} commits ({})
 
 {}
 """.format(escape(data['repository']['name']), len(data['commits']), escape(data['ref'].split("/")[-1]), commits_text)
-				response = post_tg(groupid, text, "html")
-				commits_text = ""
+			response = post_tg(groupid, text, "html")
 		if not commits_text:
 			return jsonify({"ok": True, "text": "Commits text is none"})
 		text = """🔨 <b>{}</b> - New {} commits ({})
@@ -136,6 +138,11 @@ def git_api(groupid):
 			text = "🌟 <a href='{}'>{}</a> was give a star to <a href='{}'>{}</a>!\nTotal star is now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
 			response = post_tg(groupid, text, "html")
 			return response
+
+		# If repo was created, pass that
+		if data.get('action') == "created":
+			return jsonify({"ok": True, "text": "Pass trigger for created"})
+
 		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
 		return response
 
@@ -149,12 +156,12 @@ def git_api(groupid):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was created by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
 
-	# If branch was created
+	# If branch was deleted
 	if data.get('deleted'):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was deleted by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
 
-	# If branch was created
+	# If branch was forced
 	if data.get('forced'):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was forced by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
