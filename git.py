@@ -52,17 +52,18 @@ def git_api(groupid):
 			rng = 10
 		for x in range(rng):
 			commit = data['commits'][x]
-			if len(escape(commit['message'])) > 100:
+			if len(escape(commit['message'])) > 300:
 				commit_msg = escape(commit['message']).split("\n")[0]
 			else:
 				commit_msg = escape(commit['message'])
 			commits_text += f"<code>{commit_msg}</code>\n<a href='{commit['url']}'>{commit['id'][:7]}</a> - {commit['author']['name']} {escape('<')}{commit['author']['email']}{escape('>')}\n"
-			if len(commits_text) > 100:
+			if len(commits_text) > 1000:
 				text = """🔨 <b>{}</b> - New {} commits ({})
 
 {}
 """.format(escape(data['repository']['name']), len(data['commits']), escape(data['ref'].split("/")[-1]), commits_text)
 				response = post_tg(groupid, text, "html")
+				commits_text = ""
 		if not commits_text:
 			return jsonify({"ok": True, "text": "Commits text is none"})
 		text = """🔨 <b>{}</b> - New {} commits ({})
