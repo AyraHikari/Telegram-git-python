@@ -56,7 +56,7 @@ def git_api(groupid):
 				commit_msg = escape(commit['message']).split("\n")[0]
 			else:
 				commit_msg = escape(commit['message'])
-			commits_text += f"<code>{commit_msg}</code>\n<a href='{commit['url']}'>{commit['id'][:7]}</a> - {commit['author']['name']} {escape('<')}{commit['author']['email']}{escape('>')}\n"
+			commits_text += f"<code>{commit_msg}</code>\n<a href='{commit['url']}'>{commit['id'][:7]}</a> - {commit['author']['name']} {escape('<')}{commit['author']['email']}{escape('>')}\n\n"
 			if len(commits_text) > 1000:
 				text = """🔨 <b>{}</b> - New {} commits ({})
 
