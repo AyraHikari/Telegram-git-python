@@ -174,7 +174,7 @@ def git_api(groupid):
 
 	# If wiki pages were changed
 	if data.get('pages'):
-		text = "👨‍💻 <a href='{}'>{}</a> wiki pages was updated by <a href='{}'>{}</a>!\n\n".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login'])
+		text = "👨‍💻 <a href='{}'>{}</a> wiki pages were updated by <a href='{}'>{}</a>!\n\n".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login'])
 		for x in data['pages']:
 			summary = ""
 			if x['summary']:
