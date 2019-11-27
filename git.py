@@ -99,7 +99,7 @@ def git_api(groupid):
 	# If pull request
 	if data.get('pull_request'):
 		if data.get('comment'):
-			text = """💬 New comment pull request for <b>{}</b> ({})
+			text = """💬 There is a new pull request for <b>{}</b> ({})
 
 <code>{}</code>
 
@@ -119,7 +119,7 @@ def git_api(groupid):
 
 	# If fork trigger
 	if data.get('forkee'):
-		response = post_tg(groupid, "🧾 <a href='{}'>{}</a> was fork <a href='{}'>{}</a>!\nTotal fork now is {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['forks_count']), "html")
+		response = post_tg(groupid, "🧾 <a href='{}'>{}</a> has forked <a href='{}'>{}</a>!\nTotal forks now are {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['forks_count']), "html")
 		return response
 
 	# If there is an action
@@ -127,21 +127,21 @@ def git_api(groupid):
 
 		# If release tag
 		if data.get('action') == "published" and data.get('release'):
-			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
+			text = "👨‍💻 <a href='{}'>{}</a> has {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
 			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
 			response = post_tg(groupid, text, "html")
 			return response
 
 		# If release tag was edited
 		if data.get('action') == "edited" and data.get('release'):
-			text = "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
+			text = "👨‍💻 <a href='{}'>{}</a> has {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name'])
 			text += "\n\n<b>{}</b> ({})\n<code>{}</code>\n\n<a href='{}'>Download tar</a> | <a href='{}'>Download zip</a>".format(data['release']['name'], data['release']['tag_name'], data['release']['body'], data['release']['tarball_url'], data['release']['zipball_url'])
 			response = post_tg(groupid, text, "html")
 			return response
 
 		# If repo was started
 		if data.get('action') == "started":
-			text = "🌟 <a href='{}'>{}</a> was give a star to <a href='{}'>{}</a>!\nTotal star is now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
+			text = "🌟 <a href='{}'>{}</a> gave a star to <a href='{}'>{}</a>!\nTotal stars are now {}".format(data['sender']['html_url'], data['sender']['login'], data['repository']['html_url'], data['repository']['name'], data['repository']['stargazers_count'])
 			response = post_tg(groupid, text, "html")
 			return response
 
@@ -149,7 +149,7 @@ def git_api(groupid):
 		if data.get('action') == "created":
 			return jsonify({"ok": True, "text": "Pass trigger for created"})
 
-		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> was {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
+		response = post_tg(groupid, "👨‍💻 <a href='{}'>{}</a> has {} <a href='{}'>{}</a>!".format(data['sender']['html_url'], data['sender']['login'], data['action'], data['repository']['html_url'], data['repository']['name']), "html")
 		return response
 
 	# If there was ref_type
@@ -172,9 +172,9 @@ def git_api(groupid):
 		response = post_tg(groupid, "👨‍💻 Branch {} ({}) on <a href='{}'>{}</a> was forced by <a href='{}'>{}</a>!".format(data['ref'].split("/")[-1], data['ref'].split("/")[-2], data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login']), "html")
 		return response
 
-	# If wiki pages was changed
+	# If wiki pages were changed
 	if data.get('pages'):
-		text = "👨‍💻 <a href='{}'>{}</a> wiki pages was updated by <a href='{}'>{}</a>!\n\n".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login'])
+		text = "👨‍💻 <a href='{}'>{}</a> wiki pages were updated by <a href='{}'>{}</a>!\n\n".format(data['repository']['html_url'], data['repository']['name'], data['sender']['html_url'], data['sender']['login'])
 		for x in data['pages']:
 			summary = ""
 			if x['summary']:
